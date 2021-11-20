@@ -165,7 +165,43 @@ public class Address_Book
         	System.out.println("Wrong Input");
         }
     }
-	
+    
+    /*
+     * This method is used to search number of contacts by city or state
+     * */
+    public void countByCityOrState() 
+    {
+    	System.out.println("1. Count by City:");
+        System.out.println("2. Count by State");
+        int option = sc.nextInt();
+        if (option == 1)
+        {
+            System.out.println("Enter City Name:");
+            String city = sc.next();
+            for (Map.Entry<String, Address_Book> entry : addressBooks.entrySet()) 
+            {
+                System.out.println(entry.getKey());
+                Stream<Contacts> search = entry.getValue().list.stream().filter(i -> i.getCity().equals(city));
+                System.out.println("Number of contacts in " + city + " are : " + search.count());
+            }
+        } 
+        else if (option == 2)
+        {
+            System.out.println("Enter State Name:");
+            String state = sc.next();
+            for (Map.Entry<String, Address_Book> entry : addressBooks.entrySet()) 
+            {
+                System.out.println(entry.getKey());
+                Stream<Contacts> search = entry.getValue().list.stream().filter(i -> i.getState().equals(state));
+                System.out.println("Number of contacts in " + state + " are : " + search.count());
+            }
+        } 
+        else
+        {
+        	System.out.println("Wrong Input");
+        }
+    }
+
 	public void showAllContacts()
 	{
 		for(Contacts c: list)
@@ -218,6 +254,7 @@ public class Address_Book
 		System.out.println("3. Edit Contact");
 		System.out.println("4. Delete Contact");
 		System.out.println("5. Search By City or State");
+		System.out.println("6. Count By City or State");
 		System.out.println("Enter Your Choice");
 		int choice = sc.nextInt();
 		while(choice!=0)
@@ -288,6 +325,10 @@ public class Address_Book
 					address_Book.searchByCityOrState();
 					break;
 					
+				case 6:
+					address_Book.countByCityOrState();
+					break;
+		
 				default:
 					System.out.println("Wrong InPut");
 					break;
@@ -306,6 +347,7 @@ public class Address_Book
 			System.out.println("3. Edit Contact");
 			System.out.println("4. Delete Contact");
 			System.out.println("5. Search By City or State");
+			System.out.println("6. Count By City or State");
 			System.out.println("Enter Your Choice");
 			choice = sc.nextInt();
 		}
