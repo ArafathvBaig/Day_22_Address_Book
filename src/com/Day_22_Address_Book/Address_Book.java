@@ -1,6 +1,7 @@
 package com.Day_22_Address_Book;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Address_Book 
 {
@@ -9,10 +10,13 @@ public class Address_Book
 	String email;
 	String address;
 	String city;
+	String state;
 	int zip;
 	long phoneNo;
 	
-	private static ArrayList<Contacts>list = new ArrayList<>();
+	public ArrayList<Contacts>list = new ArrayList<>();
+	public static HashMap<String, Address_Book> addressBooks = new HashMap<>();
+	Scanner sc = new Scanner(System.in);
 	
 	/*
 	 * This Method Allows You To Delete Any Specific Contact From The Array List
@@ -21,7 +25,6 @@ public class Address_Book
 	
 	public void deleteContact()
 	{
-		Scanner sc = new Scanner(System.in);
         System.out.println("Enter The Name to Delete Contact: ");
         String name=sc.nextLine();
         for (Contacts C : list) 
@@ -45,7 +48,6 @@ public class Address_Book
 	
 	public void editContact()
 	{
-        Scanner sc = new Scanner(System.in);
         System.out.println("Enter The Name to Edit Contact: ");
         String name=sc.nextLine();
         for (Contacts C : list) 
@@ -68,6 +70,9 @@ public class Address_Book
                 System.out.println("Enter the updated city");
                 this.city=sc.next();
                 C.setCity(city);
+                System.out.println("Enter the updated State");
+                this.state=sc.next();
+                C.setState(state);
                 System.out.println("Enter the updated zipcode");
                 this.zip = sc.nextInt();
                 C.setZip(zip);
@@ -90,36 +95,77 @@ public class Address_Book
 	
 	public void ContactsDetails()
 	{
-		Scanner sc = new Scanner(System.in);
+		System.out.println();
 		System.out.println("First Name:: ");
 		this.firstName = sc.nextLine();
 		System.out.println("Last Name:: ");
 		this.lastName = sc.nextLine();
-		for (Contacts C : list) 
-        {
-			while(firstName.equalsIgnoreCase(C.getFirstName()) && lastName.equalsIgnoreCase(C.getLastName())) 
-			{
-				System.out.println("First Name:: ");
-				this.firstName = sc.nextLine();
-				System.out.println("Last Name:: ");
-				this.lastName = sc.nextLine();
-			}
-        }
-		
 		System.out.println("Email:: ");
 		this.email = sc.nextLine();	
 		System.out.println("Address:: ");
 		this.address = sc.nextLine();
 		System.out.println("City Name:: ");
 		this.city = sc.nextLine();
+		System.out.println("State Name:: ");
+		this.state = sc.nextLine();
 		System.out.println("Zip Code:: ");
 		this.zip = sc.nextInt();
 		System.out.println("Phone Number:: ");
 		this.phoneNo = sc.nextLong();
-		Contacts person = new Contacts(firstName, lastName, email, address, city, zip, phoneNo);
+		Contacts person = new Contacts(firstName, lastName, email, address, city, state, zip, phoneNo);
         list.add(person);
         person.display();
 	}
+	
+	/*
+	 * This method is used to search by first name
+	 */
+	public void searchByFirstName(String firstName)
+	{
+        for (Map.Entry<String, Address_Book> entry : addressBooks.entrySet()) 
+        {
+            System.out.println(entry.getKey());
+            Stream<Contacts> search = entry.getValue().list.stream().filter(i -> i.getFirstName().equals(firstName));
+            search.forEach(str -> System.out.println(str.toString()));
+        }
+    }
+	
+	 /*
+     * This method is used to search by city or state
+     * */
+    public void searchByCityOrState() 
+    {
+        System.out.println("1. Search by City:");
+        System.out.println("2. Search by State");
+        int option = sc.nextInt();
+        if (option == 1)
+        {
+            System.out.println("Enter City Name:");
+            String city = sc.next();
+            for (Map.Entry<String, Address_Book> entry : addressBooks.entrySet())
+            {
+                System.out.println(entry.getKey());
+                Stream<Contacts> search = entry.getValue().list.stream().filter(i -> i.getCity().equals(city));
+                search.forEach(str -> System.out.println(str.toString()));
+            }
+        } 
+        else if (option == 2)
+        {
+            System.out.println("Enter State Name:");
+            String state = sc.next();
+            for (Map.Entry<String, Address_Book> entry : addressBooks.entrySet()) 
+            {
+                System.out.println(entry.getKey());
+                Stream<Contacts> search = entry.getValue().list.stream().filter(i -> i.getState().equals(state));
+                search.forEach(str -> System.out.println(str.toString()));
+            }
+        } 
+        else 
+        {
+        	System.out.println("Wrong Input");
+        }
+    }
+	
 	public void showAllContacts()
 	{
 		for(Contacts c: list)
@@ -129,21 +175,37 @@ public class Address_Book
 			System.out.println("Last Name:: "+c.getLastName());
 			System.out.println("Email:: "+c.getEmailId());
 			System.out.println("Address:: "+c.getAddress());
-			System.out.println("City Name:: "+c.getCity());
+			System.out.println("City :: "+c.getCity());
+			System.out.println("State :: "+c.getState());
 			System.out.println("Zip Code:: "+c.getZip());
 			System.out.println("Phone Number:: "+c.getPhoneNo());
 		}
 	}
+	
+	/**
+     * showContacts is used to display contacts
+     */
+    public void showContacts() 
+    {
+        int i = 1;
+        for (Contacts contact : list)
+        {
+            System.out.println("Contact Details of :: "+i);
+            System.out.println(contact.toString());
+            i++;
+        }
+    }
+	
 	public static void main(String[] args) 
-	{
-		HashMap<String, Address_Book> addressBooks = new HashMap<>();
-		Address_Book  book1 = new Address_Book ();
-		Address_Book  book2 = new Address_Book ();
-		Address_Book  book3 = new Address_Book ();
+	{	
+		Address_Book  address_Book = new Address_Book();
+		Scanner sc = new Scanner(System.in);
+		Address_Book  book1 = new Address_Book();
+		Address_Book  book2 = new Address_Book();
+		Address_Book  book3 = new Address_Book();
 		addressBooks.put("AddressBook1", book1);
 		addressBooks.put("AddressBook2", book2);
 		addressBooks.put("AddressBook3", book3);
-		Scanner sc = new Scanner(System.in);
 		System.out.println("Choose Address Book");
 		System.out.println("1. Address Book 1");
 		System.out.println("2. Address Book 2");
@@ -155,9 +217,10 @@ public class Address_Book
 		System.out.println("2. Show All Contacts");
 		System.out.println("3. Edit Contact");
 		System.out.println("4. Delete Contact");
+		System.out.println("5. Search By City or State");
 		System.out.println("Enter Your Choice");
 		int choice = sc.nextInt();
-		while(choice>=1)
+		while(choice!=0)
 		{
 			switch(choice)
 			{
@@ -179,15 +242,15 @@ public class Address_Book
 				case 2:
 					if(chooseAddressBook == 1)
 					{
-						book1.showAllContacts();
+						book1.showContacts();
 					}
 					else if(chooseAddressBook == 2)
 					{
-						book2.showAllContacts();						
+						book2.showContacts();						
 					}
 					else if(chooseAddressBook == 3)
 					{
-						book3.showAllContacts();						
+						book3.showContacts();						
 					}				
 					break;
 					
@@ -220,7 +283,11 @@ public class Address_Book
 						book3.deleteContact();						
 					}					
 					break;
-		
+					
+				case 5:
+					address_Book.searchByCityOrState();
+					break;
+					
 				default:
 					System.out.println("Wrong InPut");
 					break;
@@ -238,6 +305,7 @@ public class Address_Book
 			System.out.println("2. Show All Contacts");
 			System.out.println("3. Edit Contact");
 			System.out.println("4. Delete Contact");
+			System.out.println("5. Search By City or State");
 			System.out.println("Enter Your Choice");
 			choice = sc.nextInt();
 		}
@@ -252,16 +320,18 @@ class Contacts
     private String email = " ";
     private String address = " ";
     private String city = " ";
+    private String state = " ";
     private int zip = 0;
     private long phoneNo = 0;
 
-    Contacts(String firstName, String lastName, String email, String address, String city, int zip, long phoneNo) 
+    Contacts(String firstName, String lastName, String email, String address, String city, String state, int zip, long phoneNo) 
     {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.address = address;
         this.city = city;
+        this.state = state;
         this.zip = zip;
         this.phoneNo = phoneNo;
     }
@@ -311,6 +381,14 @@ class Contacts
     {
         this.city=city;
     }
+    public String getState() 
+    {
+        return state;
+    }
+    public void setState(String state) 
+    {
+        this.state=state;
+    }
     public int getZip()
     {
         return zip;
@@ -335,13 +413,28 @@ class Contacts
     public void display()
 	{
     	System.out.println(" ");
-		System.out.println("First Name:: "+firstName);
-		System.out.println("Last Name:: "+lastName);
-		System.out.println("Email:: "+email);
-		System.out.println("Address:: "+address);
-		System.out.println("City Name:: "+city);
-		System.out.println("Zip Code:: "+zip);
-		System.out.println("Phone Number:: "+phoneNo);
+		System.out.println("First Name :: "+firstName);
+		System.out.println("Last Name :: "+lastName);
+		System.out.println("Email :: "+email);
+		System.out.println("Address :: "+address);
+		System.out.println("City :: "+city);
+		System.out.println("State :: "+state);
+		System.out.println("Zip Code :: "+zip);
+		System.out.println("Phone Number :: "+phoneNo);
+	}
+    
+    @Override
+	public String toString() 
+    {		
+		return "\nPerson Details:"+
+				"\nFirst Name :: "+firstName+
+				"\nLast Name :: "+lastName+
+				"\nEmail :: "+email+
+				"\nAddress :: "+address+
+				"\nCity :: "+city+
+				"\nState :: "+state+
+				"\nZip Code :: "+zip+
+				"\nPhone Number :: "+phoneNo;				
 	}
 }
 
